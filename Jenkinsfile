@@ -2,32 +2,38 @@ pipeline {
     agent any
 
     environment {
-        AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
-        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
+        AWS_ACCESS_KEY_ID = credentials('aws-credentials')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-credentials')
     }
 
     stages {
-        stage('Checkout Code') {
+        stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/shashankhl-sigmoid/Terraform_assignment.git'
             }
         }
 
-        stage('Initialize Terraform') {
+        stage('Terraform Init') {
             steps {
                 sh 'terraform init'
             }
         }
 
-        stage('Plan Terraform') {
+        stage('Terraform Plan') {
             steps {
                 sh 'terraform plan -out=tfplan'
             }
         }
 
-        stage('Apply Terraform') {
+        stage('Terraform Apply') {
             steps {
                 sh 'terraform apply -auto-approve tfplan'
+            }
+        }
+        
+        stage('Terraform Destroy') {
+            steps {
+                sh 'terraform destroy -auto-approve'
             }
         }
     }
